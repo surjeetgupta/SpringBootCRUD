@@ -1,5 +1,9 @@
 package com.example.crudSpringBoot.controller;
 
+import com.example.crudSpringBoot.dto.StudentRequestDto;
+import com.example.crudSpringBoot.dto.StudentResponseDto;
+import com.example.crudSpringBoot.dto.UpdateRequestDto;
+import com.example.crudSpringBoot.dto.UpdateResponseDto;
 import com.example.crudSpringBoot.entity.Student;
 import com.example.crudSpringBoot.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +26,8 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<Student> createStudent(@RequestBody Student student){
-         Student createdStudent=studentService.createStudent(student);
+    public ResponseEntity<StudentResponseDto> createStudent(@RequestBody StudentRequestDto student){
+         StudentResponseDto createdStudent=studentService.createStudent(student);
          //return ResponseEntity.ok(createdStudent);
         //return ResponseEntity.status(201).body(createdStudent);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
@@ -38,8 +42,8 @@ public class StudentController {
         return ResponseEntity.ok(student);
     }
 
-    @GetMapping("/{id}") //path variable
-    public ResponseEntity<Student> getStudentById(@PathVariable Long id){
+    @GetMapping //path variable
+    public ResponseEntity<Student> getStudentById(@RequestParam Long id){
         Student student=studentService.getStudent(id);
         if(student==null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -48,8 +52,8 @@ public class StudentController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable Long id,@RequestBody Student student){
-        Student studentRes=studentService.updateStudent(id,student);
+    public ResponseEntity<UpdateResponseDto> updateStudent(@PathVariable Long id, @RequestBody UpdateRequestDto student){
+        UpdateResponseDto studentRes=studentService.updateStudent(id,student);
         if(studentRes==null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
@@ -63,5 +67,14 @@ public class StudentController {
            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No records found to delete");
        }
        return ResponseEntity.ok("Student deleted successfully");
+    }
+
+    @PatchMapping("/soft-delete/{id}")
+    public ResponseEntity<String> softDeleteStudent(@PathVariable Long id){
+        boolean isDeleted=studentService.softDeleteStudent(id);
+        if(!isDeleted) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No records found to delete");
+        }
+        return ResponseEntity.ok("Student deleted successfully");
     }
 }
