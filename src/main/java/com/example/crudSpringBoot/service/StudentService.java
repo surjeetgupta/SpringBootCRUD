@@ -5,6 +5,7 @@ import com.example.crudSpringBoot.dto.StudentResponseDto;
 import com.example.crudSpringBoot.dto.UpdateRequestDto;
 import com.example.crudSpringBoot.dto.UpdateResponseDto;
 import com.example.crudSpringBoot.entity.Student;
+import com.example.crudSpringBoot.exception.ResourceNotFoundException;
 import com.example.crudSpringBoot.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
@@ -34,12 +35,16 @@ public class StudentService {
     }
 
     public Student getStudent(Long id){
-        Optional<Student> student=studentRepository.findByIdAndDeletedIsFalse(id);
-        if(student.isPresent()){
-            return student.get();
-        }
+//        Optional<Student> student=studentRepository.findByIdAndDeletedIsFalse(id);
+//        if(student.isPresent()){
+//            return student.get();
+//        }
 
-        return null;
+        Student student=studentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Resource not found" + "with id: " + id));
+
+        return student;
+        //return null;
     }
 
     public List<Student> getAllStudents(){

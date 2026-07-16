@@ -45,9 +45,9 @@ public class StudentController {
     @GetMapping //path variable
     public ResponseEntity<Student> getStudentById(@RequestParam Long id){
         Student student=studentService.getStudent(id);
-        if(student==null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+//        if(student==null){
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//        }
         return ResponseEntity.ok(student);
     }
 
